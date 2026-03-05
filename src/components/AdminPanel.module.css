@@ -1,0 +1,121 @@
+.container {
+  padding: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.viewers {
+  color: #4caf50;
+  font-size: 0.9rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.textarea {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.animOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.animOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+}
+
+.animOption.selected {
+  border-color: #3498db;
+}
+
+.animLabel {
+  font-size: 1rem;
+}
+
+.animDesc {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.saveBtn, .startBtn, .resetBtn {
+  padding: 0.85rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.saveBtn {
+  background: #1e3a5f;
+  color: white;
+}
+
+.startBtn {
+  background: #27ae60;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.startBtn:disabled, .saveBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.resetBtn {
+  background: none;
+  border: 1px solid #444;
+  color: #666;
+  font-size: 0.85rem;
+}
