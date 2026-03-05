@@ -1,0 +1,121 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.title {
+  font-size: 1.3rem;
+  color: #aaa;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.cardWrapper {
+  perspective: 600px;
+}
+
+.cardWrapper.latest .card {
+  animation: pop 0.3s ease;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  padding-top: 140%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  cursor: default;
+}
+
+.card.clickable {
+  cursor: pointer;
+}
+
+.card.clickable:hover .cardBack {
+  border-color: #f39c12;
+  box-shadow: 0 0 12px rgba(243, 156, 18, 0.3);
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.cardBack, .cardFront {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.cardBack {
+  background: #1e3a5f;
+  border: 2px solid #2980b9;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cardBackText {
+  font-size: 1.5rem;
+}
+
+.cardBackNum {
+  font-size: 0.75rem;
+  color: #5dade2;
+}
+
+.cardFront {
+  background: #1a2a1a;
+  border: 2px solid #27ae60;
+  transform: rotateY(180deg);
+}
+
+.cardFront.firstPick {
+  background: #2a2a1a;
+  border-color: #f1c40f;
+}
+
+.cardPickNum {
+  font-size: 0.7rem;
+  color: #888;
+}
+
+.cardName {
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+.crown {
+  font-size: 1rem;
+}
+
+.done {
+  font-size: 1.1rem;
+  color: #27ae60;
+}
+
+@keyframes pop {
+  0% { transform: rotateY(180deg) scale(1.1); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
