@@ -9,11 +9,12 @@ import Results from './components/Results'
 
 export default function App() {
   const [view, setView] = useState('landing') // 'landing' | 'viewer' | 'adminLogin' | 'admin'
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(() => sessionStorage.getItem('isAdmin') === 'true')
   const { draw, error, startDraw, revealNext, revealCard, resetDraw, saveConfig } = useFirebaseDraw()
 
   function handleAdminLogin(password) {
     if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
+      sessionStorage.setItem('isAdmin', 'true')
       setIsAdmin(true)
       setView('admin')
       return true
