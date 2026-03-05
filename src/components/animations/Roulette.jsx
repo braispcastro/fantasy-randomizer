@@ -74,7 +74,7 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
         <div className={styles.drumName}>{displayName}</div>
       </div>
 
-      {shownReveal >= 0 && !spinning && (
+      {shownReveal >= 0 && (
         <div className={styles.lastResult}>
           <span className={styles.pickNum}>Pick #{revealedPicks[0].pickNumber}</span>
         </div>
