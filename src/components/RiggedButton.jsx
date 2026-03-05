@@ -3,13 +3,14 @@ import styles from './WaitingRoom.module.css'
 
 const MESSAGES = [
   '100% legítimo, firmado ante notario 📜',
-  'El admin jura por su equipo que no está trucado',
+  'Solo la parte en la que Raúl tiene que elegir a BTJ',
   'Completamente aleatorio... o eso nos han dicho',
   'Los abogados del admin recomiendan no responder esta pregunta',
   'Sí. Pero no puedes demostrarlo.',
-  '¿Trucado? ¡Qué barbaridad! (sí)',
+  'No, este sorteo no está organizado por Ramón',
   'El algoritmo es infalible. El admin, no tanto.',
   'Técnicamente no es trampa si todos saben que está trucado',
+  'No está trucado, es culpa del calendario',
 ]
 
 export default function RiggedButton() {
