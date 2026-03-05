@@ -4,6 +4,8 @@ import styles from './Roulette.module.css'
 export default function Roulette({ result, currentReveal, isAdmin, onRevealNext }) {
   const [spinning, setSpinning] = useState(false)
   const [displayName, setDisplayName] = useState('?')
+  // Local reveal index: only advances after animation finishes (no spoilers in history)
+  const [shownReveal, setShownReveal] = useState(currentReveal)
   const prevReveal = useRef(currentReveal)
   const timeoutRef = useRef(null)
   const total = result.length
@@ -25,14 +27,12 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
       const startTime = Date.now()
       let step = 0
 
-      // Only cycle through names not yet revealed (excluding current target)
-      const alreadyRevealed = new Set()
+      // Cycle through all names not yet shown — INCLUDING target for suspense
+      const alreadyShown = new Set()
       for (let i = 0; i < currentReveal; i++) {
-        alreadyRevealed.add(getPickAt(i).participant)
+        alreadyShown.add(getPickAt(i).participant)
       }
-      const pool = result.filter(n => !alreadyRevealed.has(n) && n !== target)
-      // Fallback if only one name left (last pick): use all names except target
-      const cyclePool = pool.length > 0 ? pool : result.filter(n => n !== target)
+      const cyclePool = result.filter(n => !alreadyShown.has(n))
 
       function tick() {
         const elapsed = Date.now() - startTime
@@ -41,10 +41,10 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
         if (progress >= 1) {
           setDisplayName(target)
           setSpinning(false)
+          setShownReveal(currentReveal) // update history only now
           return
         }
 
-        // Quadratic ease-out: starts at 60ms interval, slows to 400ms
         const delay = 60 + 340 * Math.pow(progress, 2)
         setDisplayName(cyclePool[step % cyclePool.length])
         step++
@@ -60,8 +60,9 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
 
   const allDone = currentReveal >= total - 1
 
+  // History based on shownReveal, not currentReveal — no spoilers while spinning
   const revealedPicks = []
-  for (let i = 0; i <= currentReveal; i++) {
+  for (let i = 0; i <= shownReveal; i++) {
     revealedPicks.unshift(getPickAt(i))
   }
 
@@ -69,19 +70,16 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
     <div className={styles.container}>
       <h2 className={styles.title}>🎰 Ruleta del Sorteo</h2>
 
-      {/* Slot machine drum */}
-      <div className={`${styles.drum} ${spinning ? styles.drumSpinning : currentReveal >= 0 ? styles.drumDone : ''}`}>
+      <div className={`${styles.drum} ${spinning ? styles.drumSpinning : shownReveal >= 0 ? styles.drumDone : ''}`}>
         <div className={styles.drumName}>{displayName}</div>
       </div>
 
-      {/* Pick number for latest reveal */}
-      {currentReveal >= 0 && !spinning && (
+      {shownReveal >= 0 && !spinning && (
         <div className={styles.lastResult}>
           <span className={styles.pickNum}>Pick #{revealedPicks[0].pickNumber}</span>
         </div>
       )}
 
-      {/* History of previous picks */}
       {revealedPicks.length > 1 && (
         <div className={styles.history}>
           {revealedPicks.slice(1).map(({ pickNumber, participant }) => (

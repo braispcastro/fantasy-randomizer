@@ -1,15 +1,43 @@
+import { useState, useRef, useEffect } from 'react'
 import styles from './FlippedCards.module.css'
 
 export default function FlippedCards({ result, revealedCards, isAdmin, onRevealCard }) {
   const total = result.length
   const allRevealed = revealedCards.length >= total
-  // Track which was revealed most recently for the "latest" animation
-  const latestIndex = revealedCards.length > 0 ? revealedCards[revealedCards.length - 1] : -1
+
+  // Which cards are mid-flip animation
+  const [flipping, setFlipping] = useState(new Set())
+  // Which cards show the front face (name), managed locally for smooth animation
+  const [frontCards, setFrontCards] = useState(() => new Set(revealedCards))
+  const prevRevealedRef = useRef(new Set(revealedCards))
+
+  // Animate cards revealed externally (other browser / viewer sync)
+  useEffect(() => {
+    const newCards = revealedCards.filter(i => !prevRevealedRef.current.has(i))
+    prevRevealedRef.current = new Set(revealedCards)
+
+    newCards.forEach(i => {
+      if (flipping.has(i) || frontCards.has(i)) return
+      startFlip(i)
+    })
+  }, [revealedCards])
+
+  function startFlip(index, callback) {
+    setFlipping(prev => new Set([...prev, index]))
+    // At the midpoint (card is thinnest): switch face
+    setTimeout(() => {
+      setFrontCards(prev => new Set([...prev, index]))
+      callback?.()
+    }, 200)
+    // End of animation: remove flipping class
+    setTimeout(() => {
+      setFlipping(prev => { const s = new Set(prev); s.delete(index); return s })
+    }, 400)
+  }
 
   function handleCardClick(index) {
-    if (!isAdmin) return
-    if (revealedCards.includes(index)) return
-    onRevealCard(index)
+    if (!isAdmin || revealedCards.includes(index) || flipping.has(index)) return
+    startFlip(index, () => onRevealCard(index))
   }
 
   return (
@@ -22,28 +50,29 @@ export default function FlippedCards({ result, revealedCards, isAdmin, onRevealC
       <div className={styles.grid}>
         {result.map((participant, i) => {
           const pickNumber = i + 1
-          const isRevealed = revealedCards.includes(i)
-          const isLatest = i === latestIndex
-          const isFirst = pickNumber === 1 && isRevealed
-          const isClickable = isAdmin && !isRevealed && !allRevealed
+          const isFlipping = flipping.has(i)
+          const isFront = frontCards.has(i)
+          const isClickable = isAdmin && !revealedCards.includes(i) && !isFlipping
+          const isFirstPick = pickNumber === 1 && isFront
 
           return (
             <div
               key={i}
-              className={`${styles.cardWrapper} ${isLatest ? styles.latest : ''}`}
+              className={`${styles.card} ${isFlipping ? styles.flipping : ''} ${isClickable ? styles.clickable : ''}`}
               onClick={() => isClickable && handleCardClick(i)}
             >
-              <div className={`${styles.card} ${isRevealed ? styles.flipped : ''} ${isClickable ? styles.clickable : ''}`}>
-                <div className={styles.cardBack}>
-                  <span className={styles.cardBackText}>🏈</span>
-                  <span className={styles.cardBackNum}>#{pickNumber}</span>
+              {isFront ? (
+                <div className={`${styles.face} ${styles.front} ${isFirstPick ? styles.firstPick : ''}`}>
+                  <span className={styles.pickNum}>Pick #{pickNumber}</span>
+                  <span className={styles.name}>{participant}</span>
+                  {isFirstPick && <span className={styles.crown}>👑</span>}
                 </div>
-                <div className={`${styles.cardFront} ${isFirst ? styles.firstPick : ''}`}>
-                  <span className={styles.cardPickNum}>Pick #{pickNumber}</span>
-                  <span className={styles.cardName}>{participant}</span>
-                  {isFirst && <span className={styles.crown}>👑</span>}
+              ) : (
+                <div className={`${styles.face} ${styles.back}`}>
+                  <span className={styles.backIcon}>🏈</span>
+                  <span className={styles.backNum}>#{pickNumber}</span>
                 </div>
-              </div>
+              )}
             </div>
           )
         })}
