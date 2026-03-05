@@ -40,7 +40,8 @@ export function useFirebaseDraw() {
   async function revealNext() {
     const next = (draw?.currentReveal ?? -1) + 1
     const total = draw?.result?.length ?? 0
-    if (next >= total) {
+    if (next >= total - 1) {
+      // Last reveal: set currentReveal and mark complete in one update
       await update(ref(db, DRAW_REF), { status: 'complete', currentReveal: total - 1 })
     } else {
       await update(ref(db, DRAW_REF), { currentReveal: next })
