@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import styles from './Results.module.css'
 
-export default function Results({ result, onReset }) {
+export default function Results({ result, isAdmin, onReset, onBecomeAdmin }) {
   // Fire confetti on mount
   useEffect(() => {
     confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } })
@@ -34,9 +34,10 @@ export default function Results({ result, onReset }) {
         })}
       </div>
 
-      <button className={styles.resetBtn} onClick={onReset}>
-        🔄 Nuevo sorteo
-      </button>
+      {isAdmin
+        ? <button className={styles.resetBtn} onClick={onReset}>🔄 Nuevo sorteo</button>
+        : <button className={styles.adminLink} onClick={onBecomeAdmin}>Admin</button>
+      }
     </div>
   )
 }

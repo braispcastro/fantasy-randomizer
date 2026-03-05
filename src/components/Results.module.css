@@ -77,6 +77,20 @@
   margin-top: auto;
 }
 
+.adminLink {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-top: auto;
+  padding: 0.5rem;
+}
+
+.adminLink:hover {
+  color: #555;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

@@ -48,19 +48,19 @@ export default function App() {
   }
 
   if (draw?.status === 'complete') {
-    function handleReset() {
-      if (isAdmin) { resetDraw(); return }
+    function handleBecomeAdmin() {
       const pwd = window.prompt('Contraseña de admin:')
       if (pwd === import.meta.env.VITE_ADMIN_PASSWORD) {
         sessionStorage.setItem('isAdmin', 'true')
         setIsAdmin(true)
-        resetDraw()
       }
     }
     return (
       <Results
         result={draw.result}
-        onReset={handleReset}
+        isAdmin={isAdmin}
+        onReset={resetDraw}
+        onBecomeAdmin={handleBecomeAdmin}
       />
     )
   }
