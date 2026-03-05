@@ -24,7 +24,15 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
       const DURATION = 2800
       const startTime = Date.now()
       let step = 0
-      const pool = result.filter(n => n !== target)
+
+      // Only cycle through names not yet revealed (excluding current target)
+      const alreadyRevealed = new Set()
+      for (let i = 0; i < currentReveal; i++) {
+        alreadyRevealed.add(getPickAt(i).participant)
+      }
+      const pool = result.filter(n => !alreadyRevealed.has(n) && n !== target)
+      // Fallback if only one name left (last pick): use all names except target
+      const cyclePool = pool.length > 0 ? pool : result.filter(n => n !== target)
 
       function tick() {
         const elapsed = Date.now() - startTime
@@ -38,7 +46,7 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
 
         // Quadratic ease-out: starts at 60ms interval, slows to 400ms
         const delay = 60 + 340 * Math.pow(progress, 2)
-        setDisplayName(pool[step % pool.length])
+        setDisplayName(cyclePool[step % cyclePool.length])
         step++
         timeoutRef.current = setTimeout(tick, delay)
       }
