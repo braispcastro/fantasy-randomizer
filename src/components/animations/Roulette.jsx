@@ -77,6 +77,7 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
       {shownReveal >= 0 && (
         <div className={styles.lastResult}>
           <span className={styles.pickNum}>Pick #{revealedPicks[0].pickNumber}</span>
+          <span className={styles.winner}>{revealedPicks[0].participant}</span>
         </div>
       )}
 

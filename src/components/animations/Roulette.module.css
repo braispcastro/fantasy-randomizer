@@ -78,9 +78,14 @@
 
 .pickNum {
   color: #27ae60;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.85rem;
   letter-spacing: 0.05em;
+}
+
+.winner {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
 }
 
 .history {
