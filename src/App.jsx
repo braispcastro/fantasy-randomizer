@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { sha256 } from './utils/hash'
 import { useFirebaseDraw } from './hooks/useFirebaseDraw'
 import Landing from './components/Landing'
 import AdminLogin from './components/AdminLogin'
@@ -12,8 +13,9 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(() => sessionStorage.getItem('isAdmin') === 'true')
   const { draw, error, startDraw, revealNext, revealCard, resetDraw, saveConfig } = useFirebaseDraw()
 
-  function handleAdminLogin(password) {
-    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
+  async function handleAdminLogin(password) {
+    const hash = await sha256(password)
+    if (hash === import.meta.env.VITE_ADMIN_PASSWORD_HASH) {
       sessionStorage.setItem('isAdmin', 'true')
       setIsAdmin(true)
       setView('admin')
@@ -48,9 +50,11 @@ export default function App() {
   }
 
   if (draw?.status === 'complete') {
-    function handleBecomeAdmin() {
+    async function handleBecomeAdmin() {
       const pwd = window.prompt('Contraseña de admin:')
-      if (pwd === import.meta.env.VITE_ADMIN_PASSWORD) {
+      if (!pwd) return
+      const hash = await sha256(pwd)
+      if (hash === import.meta.env.VITE_ADMIN_PASSWORD_HASH) {
         sessionStorage.setItem('isAdmin', 'true')
         setIsAdmin(true)
       }
