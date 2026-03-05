@@ -5,10 +5,10 @@ const MESSAGES = [
   '100% legítimo, firmado ante notario 📜',
   'Solo la parte en la que Raúl tiene que elegir a BTJ',
   'Completamente aleatorio... o eso nos han dicho',
-  'Los abogados del admin recomiendan no responder esta pregunta',
+  'Los abogados del comisionado recomiendan no responder esta pregunta',
   'Sí. Pero no puedes demostrarlo.',
   'No, este sorteo no está organizado por Ramón',
-  'El algoritmo es infalible. El admin, no tanto.',
+  'El algoritmo es infalible. El comisionado, no tanto.',
   'Técnicamente no es trampa si todos saben que está trucado',
   'No está trucado, es culpa del calendario',
 ]
