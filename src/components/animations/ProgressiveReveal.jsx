@@ -43,6 +43,12 @@ export default function ProgressiveReveal({ result, currentReveal, isAdmin, onRe
       {isFirstPickRevealed && (
         <div className={styles.celebration}>🎊 Pick #1 revelado!</div>
       )}
+
+      {isAdmin && allRevealed && (
+        <button className={styles.finishBtn} onClick={onRevealNext}>
+          🏆 Ver resultados
+        </button>
+      )}
     </div>
   )
 }

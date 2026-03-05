@@ -74,6 +74,12 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
         </button>
       )}
 
+      {isAdmin && allDone && !spinning && (
+        <button className={styles.finishBtn} onClick={onRevealNext}>
+          🏆 Ver resultados
+        </button>
+      )}
+
       {allDone && <div className={styles.done}>¡Sorteo completado!</div>}
     </div>
   )

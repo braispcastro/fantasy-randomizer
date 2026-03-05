@@ -67,6 +67,17 @@
   margin-top: auto;
 }
 
+.finishBtn {
+  padding: 1rem 2rem;
+  background: #f1c40f;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .celebration {
   font-size: 1.5rem;
   animation: pulse 0.5s ease infinite alternate;

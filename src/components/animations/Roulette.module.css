@@ -89,6 +89,17 @@
   cursor: pointer;
 }
 
+.finishBtn {
+  padding: 1rem 2rem;
+  background: #f1c40f;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .done {
   font-size: 1.2rem;
   color: #27ae60;
