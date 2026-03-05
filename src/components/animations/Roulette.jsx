@@ -3,34 +3,55 @@ import styles from './Roulette.module.css'
 
 export default function Roulette({ result, currentReveal, isAdmin, onRevealNext }) {
   const [spinning, setSpinning] = useState(false)
+  const [displayName, setDisplayName] = useState('?')
   const prevReveal = useRef(currentReveal)
+  const timeoutRef = useRef(null)
   const total = result.length
 
-  // Map currentReveal to reverse order (last pick first):
-  // Step i reveals pick #(total - i) = result[(total - 1) - i]
   function getPickAt(step) {
     return { pickNumber: total - step, participant: result[(total - 1) - step] }
   }
 
-  // Participants already assigned
-  const assignedNames = []
-  for (let i = 0; i <= currentReveal; i++) {
-    assignedNames.push(getPickAt(i).participant)
-  }
-  const remaining = result.filter(p => !assignedNames.includes(p))
-
-  // Animate wheel on currentReveal change
   useEffect(() => {
-    if (currentReveal > prevReveal.current || (currentReveal === 0 && prevReveal.current === -1)) {
+    const isNewReveal =
+      currentReveal > prevReveal.current ||
+      (currentReveal === 0 && prevReveal.current === -1)
+
+    if (isNewReveal && currentReveal >= 0) {
+      const target = getPickAt(currentReveal).participant
       setSpinning(true)
-      setTimeout(() => setSpinning(false), 2000)
+
+      const DURATION = 2800
+      const startTime = Date.now()
+      let step = 0
+      const pool = result.filter(n => n !== target)
+
+      function tick() {
+        const elapsed = Date.now() - startTime
+        const progress = elapsed / DURATION
+
+        if (progress >= 1) {
+          setDisplayName(target)
+          setSpinning(false)
+          return
+        }
+
+        // Quadratic ease-out: starts at 60ms interval, slows to 400ms
+        const delay = 60 + 340 * Math.pow(progress, 2)
+        setDisplayName(pool[step % pool.length])
+        step++
+        timeoutRef.current = setTimeout(tick, delay)
+      }
+
+      tick()
     }
+
     prevReveal.current = currentReveal
+    return () => clearTimeout(timeoutRef.current)
   }, [currentReveal])
 
   const allDone = currentReveal >= total - 1
 
-  // Build history of revealed picks (most recent first)
   const revealedPicks = []
   for (let i = 0; i <= currentReveal; i++) {
     revealedPicks.unshift(getPickAt(i))
@@ -38,26 +59,21 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>🎡 Ruleta del Sorteo</h2>
+      <h2 className={styles.title}>🎰 Ruleta del Sorteo</h2>
 
-      {/* Wheel visual */}
-      <div className={`${styles.wheel} ${spinning ? styles.spinning : ''}`}>
-        {(remaining.length > 0 ? remaining : result).slice(0, 8).map((name, i) => (
-          <div key={name} className={styles.wheelItem} style={{ '--i': i, '--total': Math.min(remaining.length || result.length, 8) }}>
-            {name}
-          </div>
-        ))}
+      {/* Slot machine drum */}
+      <div className={`${styles.drum} ${spinning ? styles.drumSpinning : currentReveal >= 0 ? styles.drumDone : ''}`}>
+        <div className={styles.drumName}>{displayName}</div>
       </div>
 
-      {/* Last result */}
-      {currentReveal >= 0 && (
+      {/* Pick number for latest reveal */}
+      {currentReveal >= 0 && !spinning && (
         <div className={styles.lastResult}>
           <span className={styles.pickNum}>Pick #{revealedPicks[0].pickNumber}</span>
-          <span className={styles.winner}>{revealedPicks[0].participant}</span>
         </div>
       )}
 
-      {/* History (skip the most recent, it's shown above) */}
+      {/* History of previous picks */}
       {revealedPicks.length > 1 && (
         <div className={styles.history}>
           {revealedPicks.slice(1).map(({ pickNumber, participant }) => (
@@ -70,7 +86,7 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
 
       {isAdmin && !allDone && !spinning && (
         <button className={styles.spinBtn} onClick={onRevealNext}>
-          {currentReveal === -1 ? '🎡 Girar' : '🎡 Siguiente giro'}
+          {currentReveal === -1 ? '🎰 Girar' : '🎰 Siguiente giro'}
         </button>
       )}
 
@@ -79,8 +95,6 @@ export default function Roulette({ result, currentReveal, isAdmin, onRevealNext 
           🏆 Ver resultados
         </button>
       )}
-
-      {allDone && <div className={styles.done}>¡Sorteo completado!</div>}
     </div>
   )
 }
